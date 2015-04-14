@@ -6,23 +6,17 @@ class Board
   def initialize(human_player, computer_player)
     @human_player = human_player
     @computer_player = computer_player
+    @choices = []
+    @squares = [nil, nil, nil, nil, nil, nil, nil, nil, nil]
   end
-
-  # def display_header
-  #   puts "    1   2   3"
-  # end
-  #
-  # def display_footer
-  #   puts "    ---------"
-  # end
 
   def display_board
     puts "   |   |   "
-    puts " " + (1..3).map{|i| @board || i}.join(" | ")
+    puts " " + (1..3).map{|i| @squares[i-1] || i}.join(" | ")
     puts "---|---|---"
-    puts " " + (4..6).map{|i| @board || i}.join(" | ")
+    puts " " + (4..6).map{|i| @squares[i-1] || i}.join(" | ")
     puts "---|---|---"
-    puts " " + (7..9).map{|i| @board || i}.join(" | ")
+    puts " " + (7..9).map{|i| @squares[i-1] || i}.join(" | ")
     puts "   |   |   "
   end
 
@@ -31,14 +25,14 @@ class Board
   end
 
   def play
-  self.welcome
-  self.display_board
-  self.choose_player
-  self.choose_square
-  until @game_over == true
-    self.place_letter
+    self.welcome
+    @first_player = self.choose_player
+    @current_player = @first_player
+    until @game_over == true
+      self.display_board
+      self.take_turn
+    end
   end
-end
 
 
   def choose_player
@@ -52,20 +46,26 @@ end
     end
   end
 
-  def choose_square
-    @human_player.choose_square
-    @computer_player.choose_square
-  end
+  def take_turn
+    choice = @current_player.choose_square
+    if @squares[choice - 1] == nil
+      if @current_player == @first_player
+        letter = "X"
+      else
+        letter = "O"
+      end
+    end
+    @squares[choice - 1] = letter
 
-  def place_letter
-
+    if @current_player == @human_player
+      @current_player = @computer_player
+    else
+      @current_player = @human_player
+    end
   end
 
   def declare_winner
 
   end
-
-
-
 
 end

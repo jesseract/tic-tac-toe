@@ -1,17 +1,19 @@
+require "./board.rb"
+
 class HumanPlayer
 
   def get_user_input
-    gets.chomp
+    gets.chomp.to_i
   end
 
   def choose_square
     puts "Which square do you choose?"
-    number = get_user_input
+    return get_user_input
   end
 
   def display_board_status
     puts ""
-    @board.display  
+    board.display
   end
 
 end
