@@ -46,6 +46,19 @@ class Board
     end
   end
 
+  def win_case
+    win_case = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ]
+  end
+
   def take_turn
     choice = @current_player.choose_square
     if @squares[choice - 1] == nil
@@ -55,7 +68,22 @@ class Board
         letter = "O"
       end
     end
+
     @squares[choice - 1] = letter
+
+    win_case.each do |w|
+      count = 0
+      w.each do |l|
+        if @squares[l] == letter
+          count = count + 1
+        end
+      end
+
+      if count == 3
+        @game_over = true
+        puts "Congratulations, #{@current_player}! A winnar is you!"
+      end
+    end
 
     if @current_player == @human_player
       @current_player = @computer_player
@@ -63,9 +91,4 @@ class Board
       @current_player = @human_player
     end
   end
-
-  def declare_winner
-
-  end
-
 end
