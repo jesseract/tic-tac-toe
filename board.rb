@@ -1,13 +1,7 @@
-require "./human_player.rb"
-require "./computer_player.rb"
-
 class Board
 
-  def initialize(human_player, computer_player)
-    @human_player = human_player
-    @computer_player = computer_player
-    @choices = []
-    @squares = [nil, nil, nil, nil, nil, nil, nil, nil, nil]
+  def initialize(squares = [nil, nil, nil, nil, nil, nil, nil, nil, nil])
+    @squares = squares
   end
 
   def display_board
@@ -20,33 +14,26 @@ class Board
     puts "   |   |   "
   end
 
-  def welcome
-    puts "Welcome, players!\nIt's time to play Tic Tac Toe.\n"
-  end
-
-  def play
-    self.welcome
-    @first_player = self.choose_player
-    @current_player = @first_player
-    until @game_over == true
-      self.display_board
-      self.take_turn
+  def total_moves
+    count = 0
+    @squares.each do |m|
+      if m != nil
+        count = count + 1
+      end
     end
+    return count
   end
 
-
-  def choose_player
-    coin_toss = rand(1..2)
-    if coin_toss == 1
-      puts "Human player goes first!"
-      @human_player
-    else
-      puts "Computer goes first!"
-      @computer_player
-    end
+  def is_x_turn?
+    return total_moves.even?
   end
 
-  def win_case
+  def game_over?
+    return result != nil
+  end
+
+  #return :X if x won, :O if o won, :draw if it's a draw and nil if the game isn't over
+  def result
     win_case = [
       [0, 1, 2],
       [3, 4, 5],
@@ -57,19 +44,12 @@ class Board
       [0, 4, 8],
       [2, 4, 6]
     ]
-  end
 
-  def take_turn
-    choice = @current_player.choose_square
-    if @squares[choice - 1] == nil
-      if @current_player == @first_player
-        letter = "X"
-      else
-        letter = "O"
-      end
+    if is_x_turn?
+      letter = :O
+    else
+      letter = :X
     end
-
-    @squares[choice - 1] = letter
 
     win_case.each do |w|
       count = 0
@@ -80,15 +60,35 @@ class Board
       end
 
       if count == 3
-        @game_over = true
-        puts "Congratulations, #{@current_player}! A winnar is you!"
+        return letter
       end
     end
 
-    if @current_player == @human_player
-      @current_player = @computer_player
+    if total_moves != @squares.count
+      return nil
     else
-      @current_player = @human_player
+      return :draw
     end
+  end
+
+  def can_play_at?(choice)
+    @squares[choice - 1] == nil
+  end
+
+  def board_with_move(choice)
+    if !can_play_at?(choice)
+      return nil
+    end
+
+    if is_x_turn?
+      letter = :X
+    else
+      letter = :O
+    end
+
+    squares = @squares.dup
+    squares[choice - 1] = letter
+
+    return Board.new(squares)
   end
 end
