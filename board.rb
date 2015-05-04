@@ -1,4 +1,5 @@
 class Board
+  attr_reader :win_case
 
   def initialize(squares = [nil, nil, nil, nil, nil, nil, nil, nil, nil])
     @squares = squares
@@ -34,7 +35,7 @@ class Board
 
   #return :X if x won, :O if o won, :draw if it's a draw and nil if the game isn't over
   def result
-    win_case = [
+    @win_case = [
       [0, 1, 2],
       [3, 4, 5],
       [6, 7, 8],

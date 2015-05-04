@@ -4,7 +4,7 @@ class HumanPlayer
     gets.chomp.to_i
   end
 
-  def choose_square(board)
+  def choose_square(board, game)
     puts "Which square do you choose?"
     return get_user_input
   end
