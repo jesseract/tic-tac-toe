@@ -38,7 +38,13 @@ class Game
       puts "It's a draw!"
       puts @x_moves
     else
-      puts "Congratulations, #{result}! A winner is you!"
+      if @current_player == @human_player
+        winner = "Human"
+      else
+        winner = "Computer"
+      end
+
+      puts "Congratulations, #{result}! #{winner} wins!"
       puts @x_moves
     end
   end
