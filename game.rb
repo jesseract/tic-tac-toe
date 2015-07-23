@@ -38,7 +38,7 @@ class Game
       puts "It's a draw!"
       puts @x_moves
     else
-      if @current_player == @human_player
+      if current_player == @computer_player
         winner = "Human"
       else
         winner = "Computer"
@@ -85,4 +85,14 @@ class Game
       return @second_player
     end
   end
+
+  def moves_for_player(player)
+    #get this player's moves
+    if @first_player == player
+      return x_moves
+    else
+      return o_moves
+    end
+  end
+
 end

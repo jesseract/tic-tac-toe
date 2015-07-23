@@ -3,6 +3,19 @@ class Board
 
   def initialize(squares = [nil, nil, nil, nil, nil, nil, nil, nil, nil])
     @squares = squares
+    @win_case = [
+      #horizontal lines
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+      #vertical lines
+      [1, 4, 7],
+      [2, 5, 8],
+      [3, 6, 9],
+      #diagonal lines
+      [1, 5, 9],
+      [3, 5, 7]
+    ]
   end
 
   def display_board
@@ -22,6 +35,7 @@ class Board
         count = count + 1
       end
     end
+    @squares.select{ |cell| cell != nil }.length
     return count
   end
 
@@ -35,17 +49,6 @@ class Board
 
   #return :X if x won, :O if o won, :draw if it's a draw and nil if the game isn't over
   def result
-    @win_case = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6]
-    ]
-
     if is_x_turn?
       letter = :O
     else
@@ -55,7 +58,7 @@ class Board
     win_case.each do |w|
       count = 0
       w.each do |l|
-        if @squares[l] == letter
+        if @squares[l - 1] == letter
           count = count + 1
         end
       end
