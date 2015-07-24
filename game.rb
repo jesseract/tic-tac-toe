@@ -3,29 +3,35 @@ require "./computer_player.rb"
 require "./board.rb"
 
 class Game
-  attr_reader :human_player, :computer_player, :x_moves, :o_moves, :first_player
+  attr_reader :human_player, :computer_player, :first_player
 
-  def initialize(human_player, computer_player)
+  def initialize(human_player, computer_player, human_goes_first)
     @human_player = human_player
     @computer_player = computer_player
+
+    if human_goes_first
+      @first_player = @human_player
+      @second_player = @computer_player
+    else
+      @first_player = @computer_player
+      @second_player = @human_player
+    end
+
     @board = Board.new
-    @x_moves = []
-    @o_moves = []
   end
 
   def welcome
     puts "Welcome, players!\nIt's time to play Tic Tac Toe.\n"
+
+    if @first_player == @human_player
+      puts "Human player goes first!"
+    else
+      puts "Computer goes first!"
+    end
   end
 
   def play
     self.welcome
-
-    @first_player = self.choose_player
-    if @first_player == @human_player
-      @second_player = @computer_player
-    else
-      @second_player = @human_player
-    end
 
     until @board.game_over?
       @board.display_board
@@ -36,7 +42,6 @@ class Game
     result = @board.result
     if result == :draw
       puts "It's a draw!"
-      puts @x_moves
     else
       if current_player == @computer_player
         winner = "Human"
@@ -45,33 +50,16 @@ class Game
       end
 
       puts "Congratulations, #{result}! #{winner} wins!"
-      puts @x_moves
-    end
-  end
-
-  def choose_player
-    coin_toss = rand(1..2)
-    if coin_toss == 1
-      puts "Human player goes first!"
-      @human_player
-    else
-      puts "Computer goes first!"
-      @computer_player
     end
   end
 
   def take_turn
     while true
-      choice = current_player.choose_square(@board, self)
+      choice = current_player.choose_square(@board)
       board = @board.board_with_move(choice)
       if board == nil
         puts "That's not a legal move! Choose again!"
       else
-        if @board.is_x_turn?
-          @x_moves << choice
-        else
-          @o_moves << choice
-        end
         @board = board
         break
       end
@@ -83,15 +71,6 @@ class Game
       return @first_player
     else
       return @second_player
-    end
-  end
-
-  def moves_for_player(player)
-    #get this player's moves
-    if @first_player == player
-      return x_moves
-    else
-      return o_moves
     end
   end
 

@@ -2,34 +2,42 @@ require './board.rb'
 
 class ComputerPlayer
 
-  def choose_square(board, game)
+  def choose_square(board)
+    if board.is_x_turn?
+      human_letter = :O
+      computer_letter = :X
+    else
+      human_letter = :X
+      computer_letter = :O
+    end
+
     #if you can win, win
-    square = square_that_lets_player_win(board, game, game.computer_player)
-    puts "can win? #{square}"
+    square = square_that_lets_player_win(board, computer_letter)
+    # puts "can win? #{square}"
     if square != nil
       return square
     end
 
     #if you can prevent yourself from losing, do that
-    square = square_that_lets_player_win(board, game, game.human_player)
-    puts "can lose? #{square}"
+    square = square_that_lets_player_win(board, human_letter)
+    # puts "can lose? #{square}"
     if square != nil
       return square
     end
 
     #check for ways we can be forked
-    forking_squares = squares_that_let_player_fork(board, game, game.human_player)
-    puts "forking squares: #{forking_squares}"
+    forking_squares = squares_that_let_player_fork(board, human_letter)
+    # puts "forking squares: #{forking_squares}"
     if forking_squares.length == 1
       #if human_player can fork, stop them
-      puts "can prevent fork: #{square}"
+      # puts "can prevent fork: #{square}"
       return forking_squares[0]
     elsif forking_squares.length > 1
       #if we detect two possible forks on edges, play a random open corner
       if (forking_squares & edges).length != 0
         #play corner if not occupied
         square = open_corner_square(board)
-        puts "can prevent double fork at corner? #{square}"
+        # puts "can prevent double fork at corner? #{square}"
         if square != nil
           return square
         end
@@ -39,7 +47,7 @@ class ComputerPlayer
       if (forking_squares & corners).length != 0
         #play edge if not occupied
         square = open_edge_square(board)
-        puts "can prevent double fork at edge? #{square}"
+        # puts "can prevent double fork at edge? #{square}"
         if square != nil
           return square
         end
@@ -53,7 +61,7 @@ class ComputerPlayer
 
     #play corner if not occupied
     square = open_corner_square(board)
-    puts "can play corner? #{square}"
+    # puts "can play corner? #{square}"
     if square != nil
       return square
     end
@@ -62,8 +70,8 @@ class ComputerPlayer
     return random_open_square(board)
   end
 
-  def square_that_lets_player_win(board, game, player)
-    moves = game.moves_for_player(player)
+  def square_that_lets_player_win(board, letter)
+    moves = board.moves_for_letter(letter)
 
     board.win_case.each do |line|
       line = line.dup
@@ -79,8 +87,8 @@ class ComputerPlayer
     return nil
   end
 
-  def squares_that_let_player_fork(board, game, player)
-    moves = game.moves_for_player(player)
+  def squares_that_let_player_fork(board, letter)
+    moves = board.moves_for_letter(letter)
     #prevent a fork, which is when a player has two win cases, each with one occupied square, that intersect at an unoccupied square
 
     #take all win cases and narrow them down to those that have two blanks and one mark by the player

@@ -95,4 +95,19 @@ class Board
 
     return Board.new(squares)
   end
+
+  def moves_for_letter(letter)
+    #I want squares to give me a list of the x or o moves as an array
+    moves = []
+    #moves is an array of numbers that the player or computer picked
+    for square_index in 0...(@squares.length)
+      square = @squares[square_index]
+      if letter == square
+        #letter is x or o and square is x or o or nil 
+        moves << square_index + 1
+      end
+    end
+    return moves
+  end
+
 end
