@@ -76,7 +76,11 @@ class Board
   end
 
   def can_play_at?(choice)
-    @squares[choice - 1] == nil
+    if choice < 1 || choice > @squares.count
+      return false
+    else
+      @squares[choice - 1] == nil
+    end
   end
 
   def board_with_move(choice)
@@ -103,7 +107,7 @@ class Board
     for square_index in 0...(@squares.length)
       square = @squares[square_index]
       if letter == square
-        #letter is x or o and square is x or o or nil 
+        #letter is x or o and square is x or o or nil
         moves << square_index + 1
       end
     end
